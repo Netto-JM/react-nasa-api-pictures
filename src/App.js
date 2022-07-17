@@ -135,8 +135,6 @@ class App extends Component {
         <div className="save-confirmed hidden">
           <h1>ADDED!</h1>
         </div>
-        {/* Script */}
-        <script src="script.js"></script>
       </React.Fragment>
     );
   }
