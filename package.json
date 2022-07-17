@@ -1,7 +1,7 @@
 {
   "name": "nasa-api-pictures",
   "version": "0.1.0",
-  "homepage": "https://Netto-JM.github.io/react-gh-pages",
+  "homepage": "https://Netto-JM.github.io/react-nasa-api-pictures",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
