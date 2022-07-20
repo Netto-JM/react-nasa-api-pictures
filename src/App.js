@@ -37,7 +37,7 @@ const App = () => {
     (async () => {
       try {
         const response = await fetch(apiURL);
-        resultsArray = await ((response) => {
+        const resultsArray = await ((response) => {
           if (!response.ok) {
             throw new Error(
               `This is an HTTP error: The status is ${response.status}`
@@ -56,8 +56,6 @@ const App = () => {
       }
     })();
   }, [loadTimes]);
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -97,7 +95,7 @@ const App = () => {
     setShowRemoved(true);
     setHideConfirmation((prev) => prev + 1);
   }
-  
+
 
   return (
     <React.Fragment>
