@@ -4,13 +4,18 @@ import './App.css';
 import ImagesContainer from "./components/images-container/images-container.component";
 
 const App = () => {
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [loadTimes, setLoadTimes] = useState(0);
   const [countImages, setCountImages] = useState(10);
   const [apiKey, setApiKey] = useState('DEMO_KEY');
   const [apiURL, setApiURL] = useState(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${countImages}`);
   const [apodData, setApodData] = useState([]);
+  const [isFavoritesPage, setIsFavoritesPage] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+  const [showAdded, setShowAdded] = useState(false);
+  const [showRemoved, setShowRemoved] = useState(false);
+  const [hideConfirmation, setHideConfirmation] = useState(0);
 
   useEffect(() => {
     setApiURL(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${countImages}`);
@@ -35,14 +40,51 @@ const App = () => {
         setError(error.message);
         setApodData([]);
       } finally {
-        setLoading(false)
+        setIsLoading(false)
       }
     })();
   }, [loadTimes]);
 
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowAdded(false);
+      setShowRemoved(false);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [hideConfirmation]);
+
+
   const loadMore = () => {
-    setLoadTimes((prev) => prev + 1)
+    setLoadTimes((prev) => prev + 1);
   };
+
+  const isNewFavorite = (url) => {
+    const index = favorites.findIndex(card => card.url === url);
+    return index === -1;
+  }
+
+  const saveFavorite = (url) => {
+    const card = apodData.find(card => card.url === url);
+    if (isNewFavorite) {
+      setFavorites((prev) => {
+        return [...prev, card];
+      });
+      setShowAdded(true);
+      setShowRemoved(false);
+      setHideConfirmation((prev) => prev + 1);
+    };
+  };
+
+  const removeFavorite = (url) => {
+    const newFavorites = favorites.filter(card => card.url !== url)
+    setFavorites(newFavorites);
+    setShowAdded(false);
+    setShowRemoved(true);
+    setHideConfirmation((prev) => prev + 1);
+  }
 
   let resultsArray = [{
       "copyright": "Wally Pacholka",
@@ -143,7 +185,7 @@ const App = () => {
   return (
     <React.Fragment>
       {
-      loading 
+      isLoading 
       ?
         <div className="loader">
           <img src={rocket} alt="Rocket Loading Animation" />
@@ -157,20 +199,71 @@ const App = () => {
           <div className="container">
             <div className="navigation-container">
               <span className="background"></span>
-              <span className="navigation-items" id="resultsNav">
-                <h3 className="clickable">Favorites</h3>
-                <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
-                <h3 className="clickable" onClick={loadMore}>Load More</h3>
-              </span>
-              <span className="navigation-items hidden" id="favoritesNav">
-                <h3 className="clickable">Load More NASA Images</h3>
-              </span>
+              {
+                isFavoritesPage
+                ?
+                <span className="navigation-items" id="favoritesNav">
+                  <h3 className="clickable" onClick={() => {
+                    loadMore()
+                    setIsFavoritesPage(false)
+                  }}>Load More NASA Images</h3>
+                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
+                  <h3 className="clickable" onClick={() => {
+                    setIsFavoritesPage(false)
+                  }}>Go Back</h3>
+                </span>
+                :
+                <span className="navigation-items" id="resultsNav">
+                  <h3 className="clickable" onClick={() => {
+                    setIsFavoritesPage(true)
+                  }}>Favorites</h3>
+                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
+                  <h3 className="clickable" onClick={loadMore}>Load More</h3>
+                </span>
+                }
             </div>
-            <ImagesContainer cards={apodData} />
+            {
+              isFavoritesPage
+              ?
+              < ImagesContainer cards = {
+              favorites
+              }
+              saveFavorite = {
+                saveFavorite
+              }
+              removeFavorite = {
+                removeFavorite
+              }
+              favoritPage = {
+                true
+              }
+              />
+              :
+              < ImagesContainer cards = {
+                apodData
+              }
+              saveFavorite = {
+                saveFavorite
+              }
+              removeFavorite = {
+                removeFavorite
+              }
+              favoritPage = {
+                false
+              }
+              />
+            }
           </div>
-          <div className="save-confirmed hidden">
+          { showAdded &&
+          <div className="confirmed">
             <h1>ADDED!</h1>
           </div>
+          }
+          { showRemoved &&
+          <div className="confirmed">
+            <h1>REMOVED!</h1>
+          </div>
+          }
         </>
       }
     </React.Fragment>

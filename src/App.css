@@ -98,7 +98,7 @@ body {
 
 
 /* Save Confirmation */
-.save-confirmed {
+.confirmed {
   background: white;
   padding: 8px 16px;
   border-radius: 5px;
@@ -130,7 +130,7 @@ body {
     font-size: 20px;
   }
 
-  .save-confirmed {
+  .confirmed {
     right: 25px;
   }
   
