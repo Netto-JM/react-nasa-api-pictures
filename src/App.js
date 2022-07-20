@@ -16,6 +16,18 @@ const App = () => {
   const [showAdded, setShowAdded] = useState(false);
   const [showRemoved, setShowRemoved] = useState(false);
   const [hideConfirmation, setHideConfirmation] = useState(0);
+  
+
+  useEffect(() => {
+    const nasaFavorites = JSON.parse(localStorage.getItem('nasaFavorites'));
+    if (nasaFavorites) {
+      setFavorites(nasaFavorites);
+    }
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('nasaFavorites', JSON.stringify(favorites))
+  }, [favorites]);
 
   useEffect(() => {
     setApiURL(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${countImages}`);
