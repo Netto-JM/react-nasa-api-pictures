@@ -24,6 +24,10 @@ const App = () => {
       setFavorites(nasaFavorites);
     }
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant'});
+  }, [isTheFavoritesPage])
   
   useEffect(() => {
     localStorage.setItem('nasaFavorites', JSON.stringify(favorites))
@@ -66,6 +70,8 @@ const App = () => {
 
 
   const loadMore = () => {
+    setIsLoading(true);
+    window.scrollTo({ top: 0, behavior: 'instant'});
     setLoadTimes((prev) => prev + 1);
   };
 
@@ -125,28 +131,24 @@ const App = () => {
           <div className="container">
             <div className="navigation-container">
               <span className="background"></span>
+              <span className="navigation-items" id="favoritesNav">
               {
                 isTheFavoritesPage
                 ?
-                <span className="navigation-items" id="favoritesNav">
                   <h3 className="clickable" onClick={() => {
                     setIsTheFavoritesPage(false)
                   }}>Go Back</h3>
-                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
-                  <h3 className="clickable" onClick={() => {
-                    loadMore()
-                    setIsTheFavoritesPage(false)
-                  }}>Load More NASA Images</h3>
-                </span>
                 :
-                <span className="navigation-items" id="resultsNav">
                   <h3 className="clickable" onClick={() => {
                     setIsTheFavoritesPage(true)
                   }}>Favorites</h3>
-                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
-                  <h3 className="clickable" onClick={loadMore}>Load More NASA Images</h3>
-                </span>
               }
+                <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
+                  <h3 className="clickable" onClick={() => {
+                    loadMore()
+                    setIsTheFavoritesPage(() => false)
+                  }}>Load More NASA Images</h3>
+                </span>
             </div>
             <ImagesContainer {...imagesContainerProps} />
           </div>
