@@ -5,7 +5,8 @@ const ImagesContainer = ({
   cards,
   saveFavorite,
   removeFavorite,
-  favoritPage,
+  isTheFavoritesPage,
+  isNewFavorite,
 }) => {
   return (
     <div className="images-container">
@@ -15,7 +16,8 @@ const ImagesContainer = ({
           key={card.url}
           saveFavorite={saveFavorite}
           removeFavorite={removeFavorite}
-          favoritPage={favoritPage}
+          isTheFavoritesPage={isTheFavoritesPage}
+          isNewFavorite={isNewFavorite}
         />
       ))}
     </div>

@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 
-const Card = ({ card, saveFavorite, removeFavorite, favoritPage }) => {
-  const [isAdded, setIsAdded] = useState(favoritPage);
-
+const Card = ({
+  card,
+  saveFavorite,
+  removeFavorite,
+  isTheFavoritesPage,
+  isNewFavorite,
+}) => {
+  const [isAdded, setIsAdded] = useState(isTheFavoritesPage);
   const { copyright, date, explanation, hdurl, title, url } = card;
+
+  useEffect(() => {
+    if (!isTheFavoritesPage) {
+      const isNotNewFavorite = !isNewFavorite(url);
+      setIsAdded(isNotNewFavorite);
+    }
+  }, []);
+
+
   return (
     <div className="card">
       <a href={hdurl} title="View Full Image" target="_blank">

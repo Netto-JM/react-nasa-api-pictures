@@ -11,7 +11,7 @@ const App = () => {
   const [apiKey, setApiKey] = useState('DEMO_KEY');
   const [apiURL, setApiURL] = useState(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}&count=${countImages}`);
   const [apodData, setApodData] = useState([]);
-  const [isFavoritesPage, setIsFavoritesPage] = useState(false);
+  const [isTheFavoritesPage, setIsTheFavoritesPage] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [showAdded, setShowAdded] = useState(false);
   const [showRemoved, setShowRemoved] = useState(false);
@@ -98,6 +98,15 @@ const App = () => {
     });
   }
 
+  const cards = isTheFavoritesPage ? favorites : apodData;
+
+  const imagesContainerProps = {
+    cards,
+    saveFavorite,
+    removeFavorite,
+    isTheFavoritesPage,
+    isNewFavorite
+  }
 
   return (
     <React.Fragment>
@@ -117,59 +126,29 @@ const App = () => {
             <div className="navigation-container">
               <span className="background"></span>
               {
-                isFavoritesPage
+                isTheFavoritesPage
                 ?
                 <span className="navigation-items" id="favoritesNav">
                   <h3 className="clickable" onClick={() => {
-                    setIsFavoritesPage(false)
+                    setIsTheFavoritesPage(false)
                   }}>Go Back</h3>
                   <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
                   <h3 className="clickable" onClick={() => {
                     loadMore()
-                    setIsFavoritesPage(false)
+                    setIsTheFavoritesPage(false)
                   }}>Load More NASA Images</h3>
                 </span>
                 :
                 <span className="navigation-items" id="resultsNav">
                   <h3 className="clickable" onClick={() => {
-                    setIsFavoritesPage(true)
+                    setIsTheFavoritesPage(true)
                   }}>Favorites</h3>
                   <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
                   <h3 className="clickable" onClick={loadMore}>Load More NASA Images</h3>
                 </span>
-                }
+              }
             </div>
-            {
-              isFavoritesPage
-              ?
-              < ImagesContainer cards = {
-              favorites
-              }
-              saveFavorite = {
-                saveFavorite
-              }
-              removeFavorite = {
-                removeFavorite
-              }
-              favoritPage = {
-                true
-              }
-              />
-              :
-              < ImagesContainer cards = {
-                apodData
-              }
-              saveFavorite = {
-                saveFavorite
-              }
-              removeFavorite = {
-                removeFavorite
-              }
-              favoritPage = {
-                false
-              }
-              />
-            }
+            <ImagesContainer {...imagesContainerProps} />
           </div>
           { showAdded &&
           <div className="confirmed">
