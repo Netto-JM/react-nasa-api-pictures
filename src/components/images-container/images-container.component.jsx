@@ -1,23 +1,17 @@
 import React from "react";
 import Card from "../card/card.component";
 
-const ImagesContainer = ({
-  cards,
-  saveFavorite,
-  removeFavorite,
-  isTheFavoritesPage,
-  isNewFavorite,
-}) => {
+const ImagesContainer = (props) => {
   return (
     <div className="images-container">
-      {cards.map((card) => (
+      {props.cards.map((card) => (
         <Card
           card={card}
           key={card.url}
-          saveFavorite={saveFavorite}
-          removeFavorite={removeFavorite}
-          isTheFavoritesPage={isTheFavoritesPage}
-          isNewFavorite={isNewFavorite}
+          saveFavorite={props.saveFavorite}
+          removeFavorite={props.removeFavorite}
+          isTheFavoritesPage={props.isTheFavoritesPage}
+          isNewFavorite={props.isNewFavorite}
         />
       ))}
     </div>
