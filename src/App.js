@@ -15,7 +15,7 @@ const App = () => {
   const [favorites, setFavorites] = useState([]);
   const [showAdded, setShowAdded] = useState(false);
   const [showRemoved, setShowRemoved] = useState(false);
-  const [hideConfirmation, setHideConfirmation] = useState(0);
+  const [hideConfirmation, setHideConfirmation] = useState(() => () => {});
   
 
   useEffect(() => {
@@ -48,7 +48,6 @@ const App = () => {
         setApodData(resultsArray);
         setError(null);
       } catch (error) {
-        console.log(error.message);
         setError(error.message);
         setApodData([]);
       } finally {
@@ -59,8 +58,7 @@ const App = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setShowAdded(false);
-      setShowRemoved(false);
+      hideConfirmation();
     }, 2000);
 
     return () => clearInterval(interval);
@@ -77,14 +75,16 @@ const App = () => {
   }
 
   const saveFavorite = (url) => {
-    const card = apodData.find(card => card.url === url);
-    if (isNewFavorite) {
+    if (isNewFavorite(url)) {
+      const card = apodData.find(card => card.url === url);
       setFavorites((prev) => {
         return [...prev, card];
       });
       setShowAdded(true);
       setShowRemoved(false);
-      setHideConfirmation((prev) => prev + 1);
+      setHideConfirmation(() => () => {
+        setShowAdded(false);
+      });
     };
   };
 
@@ -93,7 +93,9 @@ const App = () => {
     setFavorites(newFavorites);
     setShowAdded(false);
     setShowRemoved(true);
-    setHideConfirmation((prev) => prev + 1);
+    setHideConfirmation(() => () => {
+      setShowRemoved(false);
+    });
   }
 
 
@@ -119,13 +121,13 @@ const App = () => {
                 ?
                 <span className="navigation-items" id="favoritesNav">
                   <h3 className="clickable" onClick={() => {
+                    setIsFavoritesPage(false)
+                  }}>Go Back</h3>
+                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
+                  <h3 className="clickable" onClick={() => {
                     loadMore()
                     setIsFavoritesPage(false)
                   }}>Load More NASA Images</h3>
-                  <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
-                  <h3 className="clickable" onClick={() => {
-                    setIsFavoritesPage(false)
-                  }}>Go Back</h3>
                 </span>
                 :
                 <span className="navigation-items" id="resultsNav">
@@ -133,7 +135,7 @@ const App = () => {
                     setIsFavoritesPage(true)
                   }}>Favorites</h3>
                   <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
-                  <h3 className="clickable" onClick={loadMore}>Load More</h3>
+                  <h3 className="clickable" onClick={loadMore}>Load More NASA Images</h3>
                 </span>
                 }
             </div>
