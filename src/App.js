@@ -146,7 +146,7 @@ const App = () => {
                 <h3>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;</h3>
                   <h3 className="clickable" onClick={() => {
                     loadMore()
-                    setIsTheFavoritesPage(() => false)
+                    setIsTheFavoritesPage(false)
                   }}>Load More NASA Images</h3>
                 </span>
             </div>
